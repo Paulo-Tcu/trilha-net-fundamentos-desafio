@@ -19,19 +19,26 @@ namespace DesafioFundamentos.Models
         {
             // TODO: Pedir para o usuário digitar uma placa (ReadLine) e adicionar na lista "veiculos"
             // *IMPLEMENTE AQUI*
-            var placa = Console.Read("Digite a placa do veículo para estacionar:\t").ToString().ToUpper();
-            var msg = $"O veículo com placa {placa} já consta como estacionado, deseja removelo?\n[1]\tSim\n[Qualquer outra tecla]Não";
+            Console.Write("Digite a placa do veículo para estacionar:\t");
+            var placa = FormatPlaca(Console.ReadLine().ToString().ToUpper());
+            var msg = $"O veículo com placa {placa} já consta como estacionado, deseja removelo?\n[1]\t\t\tSim\n[Qualquer outra tecla]\tNão\n";
 
-            if ((veiculos[placa] !== null || !veiculos[placa]) && ValidaPlaca(placa))
+            if (this[placa] == null  && ValidaPlaca(placa))
             {
                 veiculos.Add(placa);
             }
             else if(ValidaPlaca(placa))
             {
-                if( Convert.ToInt32(Console.Read(msg)) == 1)
+                Console.WriteLine(msg);
+                if( Convert.ToInt32(Console.ReadLine()) == 1)
                     RemoverVeiculo(placa);
 
-                Console.WriteLine("Desculpe, esse veículo não está estacionado aqui. Confira se digitou a placa corretamente e tente novamente");
+                else
+                    Console.WriteLine("Desculpe, esse veículo não está estacionado aqui. Confira se digitou a placa corretamente e tente novamente");
+            }
+            else
+            {
+                Console.WriteLine("Placa inválida, tente usar o padrão: AAA-1111 ou AAA-1A11");
             }
 
         }
@@ -42,7 +49,7 @@ namespace DesafioFundamentos.Models
 
             // Pedir para o usuário digitar a placa e armazenar na variável placa
             // *IMPLEMENTE AQUI*
-            string placa = Console.ReadLine().ToString().ToUpper();
+            string placa = FormatPlaca(Console.ReadLine().ToString().ToUpper());
 
             // Verifica se o veículo existe
             if (veiculos.Any(x => x.ToUpper() == placa) && ValidaPlaca(placa))
@@ -52,7 +59,7 @@ namespace DesafioFundamentos.Models
                 // TODO: Pedir para o usuário digitar a quantidade de horas que o veículo permaneceu estacionado,
                 // TODO: Realizar o seguinte cálculo: "precoInicial + precoPorHora * horas" para a variável valorTotal                
                 // *IMPLEMENTE AQUI*
-                int horas = Convert.ToInt32(Console.Read());
+                int horas = Convert.ToInt32(Console.ReadLine());
                 decimal valorTotal = (precoPorHora * horas) + precoInicial;
                 
                 veiculos.Remove(placa);
@@ -61,6 +68,7 @@ namespace DesafioFundamentos.Models
                 // *IMPLEMENTE AQUI*
 
                 Console.WriteLine($"O veículo {placa} foi removido e o preço total foi de: R$ {valorTotal}");
+                
             }
             else
             {
@@ -71,16 +79,18 @@ namespace DesafioFundamentos.Models
         public void RemoverVeiculo(string placa)
         {
             
-            if (veiculos.Any(x => x.ToUpper() == placa))
+            if (veiculos.Select(x => x.ToUpper()).Where(w => w == placa.ToUpper()).FirstOrDefault() != null)
             {
                 Console.Write("Digite a quantidade de horas que o veículo permaneceu estacionado:\t");
 
-                int horas = Convert.ToInt32(Console.Read());
+                int horas = Convert.ToInt32(Console.ReadLine());
                 decimal valorTotal = (precoPorHora * horas) + precoInicial;
                 
                 veiculos.Remove(placa);
 
                 Console.WriteLine($"O veículo {placa} foi removido e o preço total foi de: R$ {valorTotal}");
+                Console.WriteLine("Pressione uma tecla para continuar");
+                Console.ReadLine();
             }
             else
             {
@@ -107,7 +117,16 @@ namespace DesafioFundamentos.Models
             }
         }
 
-        public this List<string> veiculos[string placa]
+        private string FormatPlaca(string placaVeiculo)
+        {
+            if(placaVeiculo[3] != '-'){
+                placaVeiculo = placaVeiculo.Substring(0,3) + '-' + placaVeiculo.Substring(3);
+            }
+
+            return placaVeiculo;
+        }
+
+        public string this [string placa]
         {
             get
             {

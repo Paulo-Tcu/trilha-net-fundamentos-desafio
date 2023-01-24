@@ -53,8 +53,9 @@ do
             Console.WriteLine("Opção inválida");
             break;
     }
-
-    Console.ReadLine("Pressione uma tecla para continuar");
-}while (exibirMenu)
+    
+    Console.WriteLine("Pressione uma tecla");
+    Console.ReadLine();
+}while (exibirMenu);
 
 Console.WriteLine("O programa se encerrou");
